@@ -1,0 +1,80 @@
+site_config: sites.yaml
+contract_config: contracts.yaml
+experiment:
+  seed: 2027
+  budget: 3000
+  max_cycles: 2
+  reproduction_cost: 1
+certification:
+  replay_trials: 12
+  min_replay_rate: 0.8
+  minimization_trials: 8
+  oracle_trials: 4
+  oracle_policy:
+    verify_after_write: true
+    max_retries: 3
+    confirmation_reads: 2
+    claim_on_ack: false
+selection:
+  reproduction_prior_strength: 4
+  gain_prior: 0.35
+  gain_prior_strength: 2
+  uncertainty_prior: 0.4
+  cost_prior: 28
+  uncertainty_weight: 0.8
+  cost_epsilon: 0.001
+  redundancy_weight: 0.2
+  redundancy_scale: 2
+  max_attempts_per_contract: 1
+mutation:
+  strategy: enumerate
+  max_changed_fields: 2
+  max_candidates: 24
+  minimum_objective: 0
+  regression_weight: 1.5
+  cost_weight: 0.025
+  cost_weights:
+    verify_after_write: 1
+    max_retries: 0.3
+    confirmation_reads: 0.15
+    claim_on_ack_off: 0.1
+  allowed_values:
+    claim_on_ack: [false]
+    confirmation_reads: [2]
+    max_retries: [1, 2]
+    verify_after_write: [true]
+acceptance:
+  alpha: 0.05
+  bootstrap_samples: 1500
+  repair_margin: 0.0
+  regression_tolerance: 0.05
+tasks:
+  seed_start: 50000
+  record_prefix: case
+  initial_value: old
+  target_prefix: updated
+  default_operation: persist
+  clean_intervention_type: clean
+  challenge_fit: 12
+  challenge_gate: 16
+  regression_fit: 12
+  regression_gate: 16
+  heldout_per_contract: 20
+  heldout_clean: 20
+agents:
+  donors:
+    - id: donor_agent_1
+      policy:
+        verify_after_write: false
+        max_retries: 0
+        confirmation_reads: 1
+        claim_on_ack: true
+  recipient:
+    id: recipient_agent_1
+    policy:
+      verify_after_write: false
+      max_retries: 0
+      confirmation_reads: 1
+      claim_on_ack: true
+    adaptation_sites: [recipient_cms]
+    heldout_sites: [heldout_service]

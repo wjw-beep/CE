@@ -1,0 +1,103 @@
+sites:
+  donor_calendar:
+    revision: calendar-v2
+    driver: memory
+    independent_verifier: true
+    entity_roles:
+      record: calendar_event
+    operation_bindings:
+      persist:
+        entity_role: record
+        action: update_event
+    observable_fields:
+      - initial.record.exists
+      - initial.record.value
+      - initial.permission.write
+      - final.record.value
+      - trace.acknowledged
+      - trace.observations
+      - task.target_value
+    authorized_interventions:
+      - dropped_save_with_ack
+      - no_fault
+    interventions:
+      dropped_save_with_ack:
+        type: ack_without_commit
+        recoverable: true
+        drop_first_writes: 1
+        stale_first_reads: 0
+        acknowledge_dropped: true
+      no_fault:
+        type: clean
+        recoverable: true
+        drop_first_writes: 0
+        stale_first_reads: 0
+        acknowledge_dropped: false
+  recipient_cms:
+    revision: cms-v7
+    driver: memory
+    independent_verifier: true
+    entity_roles:
+      record: article
+    operation_bindings:
+      persist:
+        entity_role: record
+        action: publish_article
+    observable_fields:
+      - initial.record.exists
+      - initial.record.value
+      - initial.permission.write
+      - final.record.value
+      - trace.acknowledged
+      - trace.observations
+      - task.target_value
+    authorized_interventions:
+      - optimistic_publish
+      - ordinary_publish
+    interventions:
+      optimistic_publish:
+        type: ack_without_commit
+        recoverable: true
+        drop_first_writes: 1
+        stale_first_reads: 0
+        acknowledge_dropped: true
+      ordinary_publish:
+        type: clean
+        recoverable: true
+        drop_first_writes: 0
+        stale_first_reads: 0
+        acknowledge_dropped: false
+  heldout_service:
+    revision: ticket-v3
+    driver: memory
+    independent_verifier: true
+    entity_roles:
+      record: service_ticket
+    operation_bindings:
+      persist:
+        entity_role: record
+        action: submit_ticket
+    observable_fields:
+      - initial.record.exists
+      - initial.record.value
+      - initial.permission.write
+      - final.record.value
+      - trace.acknowledged
+      - trace.observations
+      - task.target_value
+    authorized_interventions:
+      - ghost_ack
+      - normal_submission
+    interventions:
+      ghost_ack:
+        type: ack_without_commit
+        recoverable: true
+        drop_first_writes: 1
+        stale_first_reads: 0
+        acknowledge_dropped: true
+      normal_submission:
+        type: clean
+        recoverable: true
+        drop_first_writes: 0
+        stale_first_reads: 0
+        acknowledge_dropped: false

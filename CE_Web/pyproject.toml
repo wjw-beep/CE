@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "counterexample-web-reproduction"
+version = "0.1.0"
+description = "Runnable, configuration-driven implementation of Counterexample Web"
+requires-python = ">=3.10"
+dependencies = ["PyYAML>=6.0"]
+
+[project.scripts]
+ceweb = "ceweb.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ceweb*"]

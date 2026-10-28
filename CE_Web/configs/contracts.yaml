@@ -1,0 +1,28 @@
+contracts:
+  - id: verified_missing_persistence
+    entity_role: record
+    operation: persist
+    intervention_type: ack_without_commit
+    source_site: donor_calendar
+    donor_id: donor_agent_1
+    precondition:
+      all:
+        - eq:
+            path: initial.record.exists
+            value: true
+        - eq:
+            path: initial.permission.write
+            value: true
+    optional_preconditions:
+      - exists: trace.observations
+      - eq:
+          path: initial.record.value
+          value: old
+    event:
+      eq:
+        path: trace.acknowledged
+        value: true
+    postcondition:
+      eq:
+        path: final.record.value
+        ref: task.target_value
